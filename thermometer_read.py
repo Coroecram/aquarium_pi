@@ -20,6 +20,6 @@ def get_temp(id):
   except:
     return 9999
  
-def read_temp:
+def read_temp():
   id = '28-000006705b8a'
   return '{:.3f}'.format(get_temp(id)/float(1000)) 

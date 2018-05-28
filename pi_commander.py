@@ -57,7 +57,7 @@ def send_cmd(cmd):
 		print "Error, ", e
 		return None
 			
-def ph_input:
+if __name__ == '__main__':
 	print("    Any commands entered are passed to the pH reader via UART except:")
 	print("    Stream,xx.x command continuously polls the board every xx.x seconds and streams to plotly (https://plot.ly/~Pythagoraspberry/25)")
 	print("    Pressing ctrl-c will stop the polling\n")
@@ -114,7 +114,7 @@ def ph_input:
 				lines = read_lines()
 				for i in range(len(lines)):
 					print lines[i]
-			elif input_val.upper() == "T"
+			elif input_val.upper() == "T":
 				print "Temperature: " + read_temp()
 			else:
 				send_cmd(input_val)

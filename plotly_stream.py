@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import thermometer_read
-import ph_commander
 from serial import SerialException
 import datetime
 import plotly.plotly as plotly
