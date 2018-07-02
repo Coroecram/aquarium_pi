@@ -1,6 +1,6 @@
 import board
 import busio
-from lib import adafruit_tsl2561
+from vendor import adafruit_tsl2561
 
 def read_lux():
     # Create the I2C bus
