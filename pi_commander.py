@@ -42,7 +42,7 @@ def read_lines():
 		return lines
 
 	except SerialException as e:
-		print "Error, ", e
+		print("Error, ", e)
 		return None
 
 def send_cmd(cmd):
@@ -57,7 +57,7 @@ def send_cmd(cmd):
 		ser.write(buf)
 		return True
 	except SerialException as e:
-		print "Error, ", e
+		print("Error, ", e)
 		return None
 
 def average(list):
@@ -77,12 +77,12 @@ if __name__ == '__main__':
 	# in the terminal
 	usbport = '/dev/ttyAMA0' # change to match your pi's setup
 
-	print "Opening serial port now..."
+	print("Opening serial port now...")
 
 	try:
 		ser = serial.Serial(usbport, 9600, timeout=0)
 	except serial.SerialException as e:
-		print "Error, ", e
+		print("Error, ", e)
 		sys.exit(0)
 
 	while True:
@@ -122,7 +122,8 @@ if __name__ == '__main__':
 							print("Lux reading: " + lux_reads[-1])
 
 					time_now = datetime.datetime.now()
-					if (time_now - start_time).to_minutes() > 30 # Push to Plotly every 30 minutes
+					time_since_last = (time_now - start_time).to_minutes()
+					if time_since_last > 30: # Push to Plotly every 30 minutes
 						try:
 							py.stream_data(ph_reads, temp_reads, lux_reads)
 							ph_reads, temp_reads, lux_reads = [],[],[]
@@ -140,12 +141,12 @@ if __name__ == '__main__':
 			if len(input_val) == 0:
 				lines = read_lines()
 				for i in range(len(lines)):
-					print lines[i]
+					print(lines[i])
 			elif input_val.upper() == "T":
-				print "Temperature: " + read_temp()
+				print("Temperature: " + read_temp())
 			else:
 				send_cmd(input_val)
 				time.sleep(1.3)
 				lines = read_lines()
 				for i in range(len(lines)):
-					print lines[i]
+					print(lines[i])
