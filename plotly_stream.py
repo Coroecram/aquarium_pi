@@ -5,10 +5,11 @@ from serial import SerialException
 import datetime
 import plotly.plotly as plotly
 
-# api_key     	  = 'Ip5BaQ26ySV1XLHGPbHC'
+username = 'pythagoraspberry'
+api_key   = 'Ip5BaQ26ySV1XLHGPbHC'
 
 def start_stream():
-	py.sign_in(username, api_key)
+	plotly.sign_in(username, api_key)
 	ph_stream 	  = plotly.Stream(stream_tokens[0])
 	temp_stream   = plotly.Stream(stream_tokens[1])
 	lux_stream 	  = plotly.Stream(stream_tokens[2])
@@ -54,7 +55,7 @@ def start_stream():
 	data = Data([trace_ph, trace_temp])
 	fig = Figure(data=data, layout=layout)
 
-	py.plot(fig, filename='Cabrini Aquarium Lux, pH and Temperature', fileopt='overwrite')
+	plotly.plot(fig, filename='Cabrini Aquarium Lux, pH and Temperature', fileopt='overwrite')
 
 def stream_data(ph, temp):
 	time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')

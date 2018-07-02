@@ -4,11 +4,11 @@ import serial
 import sys
 import time
 import string
-import thermometer_read as thermometer
-import plotly_stream as py
 import board
 import busio
-import luxsensor_read
+import thermometer_read as thermometer
+import luxsensor_read as luxsensor
+import plotly_stream as py
 
 def read_line():
 	"""
@@ -41,7 +41,7 @@ def read_lines():
 			lines.append(line)
 		return lines
 
-	except SerialException as e:
+	except serial.SerialException as e:
 		print("Error, ", e)
 		return None
 
@@ -54,9 +54,9 @@ def send_cmd(cmd):
 	"""
 	buf = cmd + "\r"     	# add carriage return
 	try:
-		ser.write(buf)
+		ser.write(buf.encode('utf-8'))
 		return True
-	except SerialException as e:
+	except serial.SerialException as e:
 		print("Error, ", e)
 		return None
 
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
 		# continuous polling command automatically polls the board
 		if input_val.upper().startswith("STREAM"):
-			delaytime = float(string.split(input_val, ',')[1])
+			delaytime = float(str.split(input_val, ',')[1])
 
 			send_cmd("C,0") # turn off continuous mode
 			#clear all previous data
@@ -101,7 +101,7 @@ if __name__ == '__main__':
 			print("Polling sensor every %0.2f seconds, press ctrl-c to stop polling" % delaytime)
 
 			try:
-				start_stream()
+				py.start_stream()
 				start_time = datetime.datetime.now()
 				ph_reads   = []
 				temp_reads = []
@@ -116,7 +116,7 @@ if __name__ == '__main__':
 						if lines[i][0] != '*':
 							ph_reads.append(lines[i])
 							temp_reads.append(thermometer.read_temp())
-							lux_reads.append(luxsensor_read.read_lux())
+							lux_reads.append(luxsensor.read_lux())
 							print("pH reading: " + ph_reads[-1])
 							print("Temp reading: " + temp_reads[-1])
 							print("Lux reading: " + lux_reads[-1])
