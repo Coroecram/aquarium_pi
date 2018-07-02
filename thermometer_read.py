@@ -14,12 +14,12 @@ def get_temp(id):
     else:
       mytemp = 9999
     f.close()
- 
+
     return int(mytemp[1])
- 
+
   except:
     return 9999
- 
+
 def read_temp():
   id = '28-000006705b8a'
-  return '{:.3f}'.format(get_temp(id)/float(1000)) 
+  return '{:.3f}'.format(get_temp(id)/float(1000))
