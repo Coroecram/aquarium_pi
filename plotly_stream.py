@@ -10,9 +10,9 @@ api_key   = 'Ip5BaQ26ySV1XLHGPbHC'
 
 def start_stream():
 	plotly.sign_in(username, api_key)
-	ph_stream 	  = plotly.Stream(stream_tokens[0])
-	temp_stream   = plotly.Stream(stream_tokens[1])
-	lux_stream 	  = plotly.Stream(stream_tokens[2])
+	ph_stream 	  = plotly.Stream('jwsvoct79r')
+	temp_stream   = plotly.Stream('jzdg3fs9du')
+	lux_stream 	  = plotly.Stream('ecdqbv0uc9')
 
 	ph_stream.open()
 	temp_stream.open()
