@@ -9,7 +9,7 @@ def stream_data(datetimes, pH, temp, lux):
 		x=datetimes,
 	    y=pH,
 	    yaxis='y',
-		hoverinfo=[y,x]
+		hoverinfo=['y','x']
 	)
 
 	trace_temp = go.Scatter(
@@ -17,7 +17,7 @@ def stream_data(datetimes, pH, temp, lux):
 		x=datetimes,
 	    y=temp,
 	    yaxis='y2',
-		hoverinfo=[y,x]
+		hoverinfo=['y','x']
 	)
 
 	trace_lux = go.Scatter(
@@ -25,7 +25,7 @@ def stream_data(datetimes, pH, temp, lux):
 		x=datetimes,
 	    y=lux,
 	    yaxis='y3',
-		hoverinfo=[y,x]
+		hoverinfo=['y','x']
 	)
 
 	layout = go.Layout(
