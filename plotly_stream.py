@@ -13,7 +13,7 @@ def stream_data(datetimes, pH, temp, lux):
 	trace_temp = go.Scatter(
 		name='temp_readings',
 		x=datetimes,
-	    y2=temp,
+	    y=temp,
 	    yaxis='y2'
 	)
 
@@ -25,7 +25,7 @@ def stream_data(datetimes, pH, temp, lux):
 	)
 
 	layout = go.Layout(
-	    title='Aquarium RPi -- Lux, pH and Temperature',
+	    title='Aquarium RPi - pH,Temperature, and Lux',
 	    yaxis=dict(
 	    	title='pH',
 			titlefont=dict(
@@ -65,4 +65,4 @@ def stream_data(datetimes, pH, temp, lux):
 	data = [trace_ph, trace_temp, trace_lux]
 	fig = dict(data=data, layout=layout)
 	print('Plotting')
-	plotly.plot(fig, filename='Aquarium ; Lux, pH and Temperature', fileopt='overwrite', auto_open=False)
+	plotly.plot(fig, filename='Aquarium RPi - pH,Temperature, and Lux', fileopt='extend', auto_open=False)
