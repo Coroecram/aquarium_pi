@@ -2,6 +2,7 @@
 
 import serial
 from serial import SerialException
+from http.client import HTTPException
 import sys
 import datetime
 import time
@@ -103,12 +104,12 @@ if __name__ == '__main__':
 			print("Polling sensor every %0.2f seconds, press ctrl-c to stop polling" % delaytime)
 
 			try:
-				#py.start_stream()
 				plot_start_time = datetime.datetime.now()
 				avg_start_time = datetime.datetime.now()
 				ph_reads   = []
 				temp_reads = []
 				lux_reads  = []
+				time_reads = []
 				avg_time_reads = []
 				avg_ph_reads   = []
 				avg_temp_reads = []
@@ -122,7 +123,6 @@ if __name__ == '__main__':
 						# print("line",lines[i])
 						if lines[i][0] != '*':
 							# print("Response: " , lines[i])
-							time_reads.append(time_now)
 							ph_reads.append(lines[i])
 							temp_reads.append(thermometer.read_temp())
 							lux_reads.append(luxsensor.read_lux())
@@ -130,14 +130,24 @@ if __name__ == '__main__':
 							print("Temp reading: " + temp_reads[-1])
 							print("Lux reading: " + str(lux_reads[-1]))
 							time_since_last_avg = (time_now - avg_start_time).seconds
-
+							if time_since_last_avg > 60:
+								avg_time_reads.append(datetime.datetime.now())								
+								avg_ph_reads.append(average(ph_reads))
+								avg_temp_reads.append(average(temp_reads))
+								avg_lux_reads.append(average(lux_reads))
+								avg_start_time = time_now
+								ph_reads   = []
+								temp_reads = []
+								lux_reads  = []
 							time_since_last_plot = ((time_now - plot_start_time).seconds / 60)
-							print("time_since_last " + str(time_since_last))
-							if time_since_last > 30: # Push to Plotly every 30 minutes
+							if time_since_last_plot > 2: # Push to Plotly every 30 minutes
 								try:
-									#py.stream_data(time_reads, ph_reads, temp_reads, lux_reads)
-									ph_reads, temp_reads, lux_reads = [],[],[]
-									start_time = datetime.datetime.now()
+									py.stream_data(avg_time_reads, avg_ph_reads, avg_temp_reads, avg_lux_reads)
+									avg_time_reads = []									
+									avg_ph_reads   = []
+									avg_temp_reads = []
+									avg_lux_reads  = []
+									plot_start_time = time_now
 								except HTTPException as e:
 									print("HTTPException: {0}".format(e))
 					time.sleep(delaytime)
