@@ -5,8 +5,11 @@ from serial import SerialException
 import datetime
 import plotly.plotly as plotly
 
-username = 'pythagoraspberry'
-api_key   = 'Ip5BaQ26ySV1XLHGPbHC'
+ph_stream 	= None
+temp_stream = None
+lux_stream 	= None
+username       = 'pythagoraspberry'
+api_key           = 'Ip5BaQ26ySV1XLHGPbHC'
 
 def start_stream():
 	plotly.sign_in(username, api_key)
@@ -18,22 +21,25 @@ def start_stream():
 	temp_stream.open()
 	lux_stream.open()
 
-	trace_ph = Scatter(
+	trace_ph = plotly.Scatter(
 	    x=[],
 	    y=[],
-	   stream=Stream(
-	        token=ph_stream_token
-	    ),
+	   stream=ph_stream,
 	    yaxis='y'
 	)
 
-	trace_temp = Scatter(
+	trace_temp = plotly.Scatter(
 	    x=[],
 	    y=[],
-	    stream=Stream(
-	        token=temp_stream_token
-	    ),
+	    stream=temp_stream,
 	    yaxis='y2'
+	)
+
+	trace_lux = plotly.Scatter(
+	    x=[],
+	    y=[],
+	    stream=temp_stream,
+	    yaxis='y3'
 	)
 
 	layout = Layout(
@@ -52,17 +58,17 @@ def start_stream():
 	    )
 	)
 
-	data = Data([trace_ph, trace_temp])
+	data = Data([trace_ph, trace_temp, trace_lux])
 	fig = Figure(data=data, layout=layout)
 
 	plotly.plot(fig, filename='Cabrini Aquarium Lux, pH and Temperature', fileopt='overwrite')
 
-def stream_data(ph, temp):
+def stream_data(times, ph, temp, lux):
 	time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     # Write the data to your plotly stream
-	ph_stream.write({'x': time_now, 'y': ph})
-	temp_stream.write({'x': time_now, 'y': temp})
-	lux_stream.write({'x': time_now, 'y': lux})
+	ph_stream.write({'x': times, 'y': ph})
+	temp_stream.write({'x': times, 'y': temp})
+	lux_stream.write({'x': times, 'y': lux})
 
 def end_stream():
 	stream.close()

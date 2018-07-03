@@ -15,7 +15,7 @@ def read_lux():
     # print("Gain = {}".format(tsl.gain))
     # print("Integration time = {}".format(tsl.integration_time))
 
-    # print("Configuring TSL2561...")
+     # print("Configuring TSL2561...")
 
     # Enable the light sensor
     tsl.enabled = True
@@ -47,5 +47,6 @@ def read_lux():
     # print("Lux = {}".format(lux))
 
     # Disble the light sensor (to save power)
-    #tsl.enabled = False
+    # tsl.enabled = False
+
     return lux
