@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import serial
-from serial import SerialException
 from http.client import HTTPException
 import sys
 import datetime
@@ -45,7 +44,7 @@ def read_lines():
 			lines.append(line)
 		return lines
 
-	except SerialException as e:
+	except serial.SerialException as e:
 		print("Error, ", e)
 		return None
 
