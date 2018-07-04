@@ -12,10 +12,11 @@ import busio
 import thermometer_read as thermometer
 import luxsensor_read as luxsensor
 import plotly_stream as py
+import postgres_insert as pg
 
 def read_line():
 	"""
-	taken from the ftdi library and modified to 
+	taken from the ftdi library and modified to
 	use the ezo line separator "\r"
 	"""
 	lsl = len('\r')
@@ -29,7 +30,7 @@ def read_line():
 				line_buffer[-lsl:] == list('\r')):
 			break
 	return ''.join(line_buffer)
-	
+
 def read_lines():
 	"""
 	also taken from ftdi lib to work with modified readline function
@@ -43,10 +44,10 @@ def read_lines():
 				ser.flush_input()
 			lines.append(line)
 		return lines
-	
+
 	except SerialException as e:
 		print("Error, ", e)
-		return None		
+		return None
 
 def send_cmd(cmd):
 	"""
@@ -131,19 +132,24 @@ if __name__ == '__main__':
 							print("Lux reading: " + str(lux_reads[-1]))
 							time_since_last_avg = (time_now - avg_start_time).seconds
 							if time_since_last_avg > 60:
-								avg_time_reads.append(datetime.datetime.now())								
-								avg_ph_reads.append(average(ph_reads))
-								avg_temp_reads.append(average(temp_reads))
-								avg_lux_reads.append(average(lux_reads))
+								ins_time = datetime.datetime.now()
+								ins_ph = average(ph_reads)
+								ins_temp = average(temp_reads)
+								ins_lux = average(lux_reads)
+								avg_time_reads.append(ins_time)
+								avg_ph_reads.append(ins_ph)
+								avg_temp_reads.append(ins_temp)
+								avg_lux_reads.append(ins_lux)
 								avg_start_time = time_now
 								ph_reads   = []
 								temp_reads = []
 								lux_reads  = []
+								pg.insert_data(ins_time, ins_ph, ins_temp, ins_lux)
 							time_since_last_plot = ((time_now - plot_start_time).seconds / 60)
 							if time_since_last_plot > 2: # Push to Plotly every 30 minutes
 								try:
 									py.stream_data(avg_time_reads, avg_ph_reads, avg_temp_reads, avg_lux_reads)
-									avg_time_reads = []									
+									avg_time_reads = []
 									avg_ph_reads   = []
 									avg_temp_reads = []
 									avg_lux_reads  = []
