@@ -131,7 +131,7 @@ if __name__ == '__main__':
 							print("Temp reading: " + temp_reads[-1])
 							print("Lux reading: " + str(lux_reads[-1]))
 							time_since_last_avg = (time_now - avg_start_time).seconds
-							if time_since_last_avg > 60:
+							if time_since_last_avg > 300:
 								ins_time = datetime.datetime.now()
 								ins_ph = average(ph_reads)
 								ins_temp = average(temp_reads)
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 								lux_reads  = []
 								pg.insert_data(ins_time, ins_ph, ins_temp, ins_lux)
 							time_since_last_plot = ((time_now - plot_start_time).seconds / 60)
-							if time_since_last_plot > 2: # Push to Plotly every 30 minutes
+							if time_since_last_plot > 60: # Push to Plotly every 60 minutes
 								try:
 									py.stream_data(avg_time_reads, avg_ph_reads, avg_temp_reads, avg_lux_reads)
 									avg_time_reads = []
