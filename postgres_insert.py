@@ -5,12 +5,12 @@ import datetime
  
 def insert_data(time, ph, temp, lux):
     	
-    sql = """INSERT INTO aquarium_data
+    sql = """INSERT INTO cabrini_tank_2018
              VALUES(%s,%s,%s,%s) RETURNING id;"""
     conn = None
     try:
         # connect to the PostgreSQL database
-        conn = psycopg2.connect("host=localhost dbname=test_python user=test_user password=test")
+        conn = psycopg2.connect("host=localhost dbname=aquarium_data user=pi password=raspberry")
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement
