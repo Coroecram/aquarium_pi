@@ -44,7 +44,7 @@ def stream_data(datetimes, pH, temp, lux):
             	color='#1f77b4'
         	),
 			dtick=0.25,
-			range=[6.5, 7.5]
+			range=[6.5, 7.25]
 	    ),
 	    yaxis2=dict(
 	        title='Celsius',
@@ -59,7 +59,7 @@ def stream_data(datetimes, pH, temp, lux):
 			overlaying='y',
 			side='left',
 			position=0.15,
-			range=[20, 29]
+			range=[20.25, 26.75]
 		),
 		yaxis3=dict(
 	    	title='Lux',
@@ -73,7 +73,7 @@ def stream_data(datetimes, pH, temp, lux):
 			anchor='x',
 			overlaying='y',
 			side='right',
-			range=[0,225]
+			range=[0,205]
 		)
 	)
 
