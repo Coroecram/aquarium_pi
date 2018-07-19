@@ -2,6 +2,7 @@
 
 import psycopg2
 import datetime
+import os
 
 def insert_data(time, ph, temp, lux):
 
