@@ -2,6 +2,7 @@
 
 import plotly.plotly as plotly
 import plotly.graph_objs as go
+from plotly.exceptions import PlotlyRequestError
 
 def stream_data(datetimes, pH, temp, lux):
 	trace_ph = go.Scatter(
@@ -80,4 +81,9 @@ def stream_data(datetimes, pH, temp, lux):
 	data = [trace_ph, trace_temp, trace_lux]
 	fig = dict(data=data, layout=layout)
 	print('Plotting')
-	plotly.plot(fig, filename='Aquarium RPi - pH,Temperature, and Lux', fileopt='extend', auto_open=False)
+	try:
+		plotly.plot(fig, filename='Aquarium RPi - pH,Temperature, and Lux', fileopt='extend', auto_open=False)
+		return True
+	except PlotlyRequestError as err:
+		print(err)
+		return False

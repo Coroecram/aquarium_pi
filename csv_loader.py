@@ -13,7 +13,7 @@ if __name__ == '__main__':
         # create a new cursor
         cur = conn.cursor()
         cur.execute(create_table)
-        with open('/home/pi/Documents/aquarium_pi/first_data.csv', 'r') as f:
+        with open('/home/pi/Documents/aquarium_pi/20180720.csv', 'r') as f:
             cur.copy_from(f, 'cabrini_tank_2018 ', sep=',', columns=('observed_at','ph_read','temp_read','lux_read'))
             
         conn.commit()

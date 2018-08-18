@@ -12,6 +12,7 @@ import thermometer_read as thermometer
 import luxsensor_read as luxsensor
 import plotly_stream as py
 import postgres_insert as pg
+import aws_insert as aws
 
 def read_line():
 	"""
@@ -126,9 +127,6 @@ if __name__ == '__main__':
 							ph_reads.append(lines[i])
 							temp_reads.append(thermometer.read_temp())
 							lux_reads.append(luxsensor.read_lux())
-							print("pH reading: " + ph_reads[-1])
-							print("Temp reading: " + temp_reads[-1])
-							print("Lux reading: " + str(lux_reads[-1]))
 							time_since_last_avg = (time_now - avg_start_time).seconds
 							if time_since_last_avg > 300:
 								ins_time = datetime.datetime.now()
@@ -144,14 +142,16 @@ if __name__ == '__main__':
 								temp_reads = []
 								lux_reads  = []
 								pg.insert_data(ins_time, ins_ph, ins_temp, ins_lux)
+								aws.insert_data(ins_time, ins_ph, ins_temp, ins_lux)
 							time_since_last_plot = ((time_now - plot_start_time).seconds / 60)
 							if time_since_last_plot > 60: # Push to Plotly every 60 minutes
 								try:
-									py.stream_data(avg_time_reads, avg_ph_reads, avg_temp_reads, avg_lux_reads)
-									avg_time_reads = []
-									avg_ph_reads   = []
-									avg_temp_reads = []
-									avg_lux_reads  = []
+									streamed = py.stream_data(avg_time_reads, avg_ph_reads, avg_temp_reads, avg_lux_reads)
+									if streamed:
+										avg_time_reads = []
+										avg_ph_reads   = []
+										avg_temp_reads = []
+										avg_lux_reads  = []
 									plot_start_time = time_now
 								except HTTPException as e:
 									print("HTTPException: {0}".format(e))
