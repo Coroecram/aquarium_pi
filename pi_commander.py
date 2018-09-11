@@ -12,7 +12,7 @@ import board
 import busio
 import thermometer_read as thermometer
 import luxsensor_read as luxsensor
-from vendor import adafruit_dht as ambient
+import Adafruit_DHT as dht
 import plotly_stream as py
 import postgres_insert as pg
 import aws_insert as aws
@@ -25,7 +25,7 @@ def average(list):
 
 if __name__ == '__main__':
 	device = AtlasI2C() 	# creates the I2C port object, specify the address or bus if necessary
-	ambient_sensor = ambient.DHT22(7)
+	ambient_sensor = dht.DHT22(board.D7)
 
 	print("    Any commands entered are passed to the pH reader via UART except:")
 	print("    Stream,xx.x command continuously polls the board every xx.x seconds and streams to plotly (https://plot.ly/~Pythagoraspberry/25)")
