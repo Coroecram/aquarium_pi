@@ -24,7 +24,7 @@ def average(list):
 	return float('%.2f' % (sum / len(list)))
 
 if __name__ == '__main__':
-	device = AtlasI2C() 	# creates the I2C port object, specify the address or bus if necessary
+	device = i2c.AtlasI2C() 	# creates the I2C port object, specify the address or bus if necessary
 	ambient_sensor = dht.DHT22(board.D7)
 
 	print("    Any commands entered are passed to the pH reader via UART except:")
