@@ -35,7 +35,7 @@ def stream_data(datetimes, pH, temp, lux):
 	)
 
 	layout = go.Layout(
-	    title='Aquarium RPi - pH,Temperature, and Lux',
+	    title='Garzon Aquarium Readings',
 	    yaxis=dict(
 	    	title='pH',
 			titlefont=dict(
@@ -82,7 +82,7 @@ def stream_data(datetimes, pH, temp, lux):
 	fig = dict(data=data, layout=layout)
 	print('Plotting')
 	try:
-		plotly.plot(fig, filename='Aquarium RPi - pH,Temperature, and Lux', fileopt='extend', auto_open=False)
+		plotly.plot(fig, filename='Garzon Aquarium Readings', fileopt='extend', auto_open=False)
 		return True
 	except PlotlyRequestError as err:
 		print(err)

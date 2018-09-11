@@ -21,5 +21,5 @@ def get_temp(id):
     return 9999
 
 def read_temp():
-  id = '28-000006705b8a'
+  id = '28-0000066efc16'
   return '{:.3f}'.format(get_temp(id)/float(1000))
