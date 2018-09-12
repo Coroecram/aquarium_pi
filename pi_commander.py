@@ -98,9 +98,9 @@ if __name__ == '__main__':
 					lux = luxsensor.read_lux()
 					hum, atemp = dht.read(22, 4)
 					append_sensor_data(sensor_data, ph, wtemp, lux, atemp, hum, time_now)
-					print("pH Response: " , lines)
-					print("thermometer response: ", thermometer.read_temp())
-					print("lux response: ", luxsensor.read_lux())
+					print("pH Response: " , ph)
+					print("thermometer response: ", wtemp)
+					print("lux response: ", lux)
 					print("ambient temp response: ", atemp)
 					print("ambient humidity response: ", hum)
 					time_since_last_avg = (time_now - last_avg_time).seconds
@@ -135,6 +135,16 @@ if __name__ == '__main__':
 			elif input_val.upper() == "WT":
 				print("Water Temperature: " + thermometer.read_temp())
 			elif input_val.upper() == "AT":
-				print("Air Temperature: " + thermometer.read_temp())
+				hum, atemp = dht.read(22, 4)
+				print("Air Temperature: " + atemp)
+			elif input_val.upper() == "HUM":
+				hum, atemp = dht.read(22, 4)
+				print("Humidity: " + hum)
+			elif input_val.upper() == "AMB":
+				hum, atemp = dht.read(22, 4)
+				print("Air Temperature: " + atemp)
+				print("Humidity: " + hum)
+			elif input_val.upper() == "LUX":
+				print("Lux: " + luxsensor.read_lux())
 			else:
 				print(device.query(input_val))
