@@ -20,9 +20,9 @@ import aws_insert as aws
 
 def average(data):
 	sum = 0
-	for read in list:
+	for read in data:
 		sum += float(read)
-	return float('%.2f' % (sum / len(list)))
+	return float('%.2f' % (sum / len(data)))
 
 def sensor_average(output, input):
 	output['ph'].append(average(input['ph']))
