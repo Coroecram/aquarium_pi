@@ -4,11 +4,11 @@ import plotly.plotly as plotly
 import plotly.graph_objs as go
 from plotly.exceptions import PlotlyRequestError
 
-def stream_data(datetimes, pH, temp, lux):
+def stream_data(datetimes, ph, temp, lux):
 	trace_ph = go.Scatter(
 		name='ph_readings',
 		x=datetimes,
-	    y=pH,
+	    y=ph,
 		marker = dict(
 		 	color='#1f77b4'
 		)
@@ -37,7 +37,7 @@ def stream_data(datetimes, pH, temp, lux):
 	layout = go.Layout(
 	    title='Garzon Aquarium Readings',
 	    yaxis=dict(
-	    	title='pH',
+	    	title='ph',
 			titlefont=dict(
             	color='#1f77b4'
 	        ),

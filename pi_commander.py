@@ -24,23 +24,23 @@ def average(data):
 		sum += float(read)
 	return float('%.2f' % (sum / len(list)))
 
-def sensor_average(out, in):
-	out['ph'].append(average(in['ph']))
-	out['temp'].append(average(in['temp']))
-	out['lux'].append(average(in['lux']))
-	out['atemp'].append(average(in['atemp']))
-	out['hum'].append(average(in['hum']))
-	out['time'].append(datetime.datetime.now)
-	return out
+def sensor_average(output, input):
+	output['ph'].append(average(input['ph']))
+	output['temp'].append(average(input['temp']))
+	output['lux'].append(average(input['lux']))
+	output['atemp'].append(average(input['atemp']))
+	output['hum'].append(average(input['hum']))
+	output['time'].append(datetime.datetime.now())
+	return output
 
 def initialize_sensor_data():
 	return {
-				'ph'    = [],
-				'wtemp' = [],
-				'lux'   = [],
-				'atemp' = [],
-				'hum'   = [],
-				'time'  = []
+				'ph'    : [],
+				'wtemp' : [],
+				'lux'   : [],
+				'atemp' : [],
+				'hum'   : [],
+				'time'  : []
 			}
 
 def append_sensor_data(sensor_data, ph, wtemp, lux, atemp, hum, time):
@@ -85,8 +85,8 @@ if __name__ == '__main__':
 			print("Polling sensor every %0.2f seconds, press ctrl-c to stop polling" % delaytime)
 
 			try:
-				plot_start_time = datetime.datetime.now()
-				avg_start_time = datetime.datetime.now()
+				last_plot_time = datetime.datetime.now()
+				last_avg_time = datetime.datetime.now()
 
 				sensor_data = initialize_sensor_data()
 				avg_sensor_data = initialize_sensor_data()
@@ -108,19 +108,25 @@ if __name__ == '__main__':
 						last_avg_time = time_now
 						sensor_average(avg_sensor_data, sensor_data)
 
-						pg.insert_data(avg_sensor_data)
-						aws.insert_data(avg_sensor_data)
+						pg.insert_data(avg_sensor_data['ph'],
+						 			   avg_sensor_data['wtemp'],
+									   avg_sensor_data['lux'],
+									   avg_sensor_data['atemp'],
+									   avg_sensor_data['hum'] )
 
-						time_since_last_plot = ((time_now - plot_start_time).seconds / 60)
+						aws.insert_data(avg_sensor_data['ph'],
+						 			   avg_sensor_data['wtemp'],
+									   avg_sensor_data['lux'],
+									   avg_sensor_data['atemp'],
+									   avg_sensor_data['hum'] )
+
+						time_since_last_plot = ((time_now - last_plot_time).seconds / 60)
 						if time_since_last_plot > 60: # Push to Plotly every 60 minutes
 							try:
 								streamed = py.stream_data(avg_sensor_data)
 								if streamed:
-									avg_time_reads = []
-									avg_ph_reads   = []
-									avg_temp_reads = []
-									avg_lux_reads  = []
-								plot_start_time = time_now
+									avg_sensor_data = initialize_sensor_data()
+									last_plot_time = time_now
 							except HTTPException as e:
 								print("HTTPException: {0}".format(e))
 					time.sleep(delaytime)
