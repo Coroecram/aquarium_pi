@@ -17,11 +17,39 @@ import plotly_stream as py
 import postgres_insert as pg
 import aws_insert as aws
 
-def average(list):
+
+def average(data):
 	sum = 0
 	for read in list:
 		sum += float(read)
 	return float('%.2f' % (sum / len(list)))
+
+def sensor_average(out, in):
+	out['ph'].append(average(in['ph']))
+	out['temp'].append(average(in['temp']))
+	out['lux'].append(average(in['lux']))
+	out['atemp'].append(average(in['atemp']))
+	out['hum'].append(average(in['hum']))
+	out['time'].append(datetime.datetime.now)
+	return out
+
+def initialize_sensor_data():
+	return {
+				'ph'    = [],
+				'wtemp' = [],
+				'lux'   = [],
+				'atemp' = [],
+				'hum'   = [],
+				'time'  = []
+			}
+
+def append_sensor_data(sensor_data, ph, wtemp, lux, atemp, hum, time):
+		sensor_data['ph'].append(ph)
+		sensor_data['wtemp'].append(wtemp)
+		sensor_data['lux'].append(lux)
+		sensor_data['atemp'].append(atemp)
+		sensor_data['hum'].append(hum)
+		sensor_data['time'].append(time)
 
 if __name__ == '__main__':
 	device = i2c.AtlasI2C() 	# creates the I2C port object, specify the address or bus if necessary
@@ -59,75 +87,54 @@ if __name__ == '__main__':
 			try:
 				plot_start_time = datetime.datetime.now()
 				avg_start_time = datetime.datetime.now()
-				ph_reads   = []
-				temp_reads = []
-				lux_reads  = []
-				time_reads = []
-				avg_time_reads = []
-				avg_ph_reads   = []
-				avg_temp_reads = []
-				avg_lux_reads  = []
+
+				sensor_data = initialize_sensor_data()
+				avg_sensor_data = initialize_sensor_data()
 
 				while True:
 					time_now = datetime.datetime.now()
-					lines = device.query("R")
-					# for i in range(len(lines)):
-					# 	# print("line",lines[i])
-					# 	if lines[i][0] != '*':
+					ph    = device.query("R")
+					wtemp = thermometer.read_temp()
+					lux = luxsensor.read_lux()
+					hum, atemp = dht.read(22, 4)
+					append_sensor_data(sensor_data, ph, wtemp, lux, atemp, hum, time_now)
 					print("pH Response: " , lines)
 					print("thermometer response: ", thermometer.read_temp())
 					print("lux response: ", luxsensor.read_lux())
-					ambient_humidity, ambient_temperature = dht.read(22, 4)
-					print("ambient temp response: ", ambient_temperature)
-					print("ambient humidity response: ", ambient_humidity)
-					# 		ph_reads.append(lines[i])
-					# 		temp_reads.append(thermometer.read_temp())
-					# 		lux_reads.append(luxsensor.read_lux())
-					# 		time_since_last_avg = (time_now - avg_start_time).seconds
-					# 		if time_since_last_avg > 300:
-					# 			ins_time = datetime.datetime.now()
-					# 			ins_ph = average(ph_reads)
-					# 			ins_temp = average(temp_reads)
-					# 			ins_lux = average(lux_reads)
-					# 			avg_time_reads.append(ins_time)
-					# 			avg_ph_reads.append(ins_ph)
-					# 			avg_temp_reads.append(ins_temp)
-					# 			avg_lux_reads.append(ins_lux)
-					# 			avg_start_time = time_now
-					# 			ph_reads   = []
-					# 			temp_reads = []
-					# 			lux_reads  = []
-					# 			pg.insert_data(ins_time, ins_ph, ins_temp, ins_lux)
-					# 			aws.insert_data(ins_time, ins_ph, ins_temp, ins_lux)
-					# 		time_since_last_plot = ((time_now - plot_start_time).seconds / 60)
-					# 		if time_since_last_plot > 60: # Push to Plotly every 60 minutes
-					# 			try:
-					# 				streamed = py.stream_data(avg_time_reads, avg_ph_reads, avg_temp_reads, avg_lux_reads)
-					# 				if streamed:
-					# 					avg_time_reads = []
-					# 					avg_ph_reads   = []
-					# 					avg_temp_reads = []
-					# 					avg_lux_reads  = []
-					# 				plot_start_time = time_now
-					# 			except HTTPException as e:
-					# 				print("HTTPException: {0}".format(e))
-					time.sleep(delaytime)
+					print("ambient temp response: ", atemp)
+					print("ambient humidity response: ", hum)
+					time_since_last_avg = (time_now - last_avg_time).seconds
+					if time_since_last_avg > 30:
+						last_avg_time = time_now
+						sensor_average(avg_sensor_data, sensor_data)
 
+						pg.insert_data(avg_sensor_data)
+						aws.insert_data(avg_sensor_data)
+
+						time_since_last_plot = ((time_now - plot_start_time).seconds / 60)
+						if time_since_last_plot > 60: # Push to Plotly every 60 minutes
+							try:
+								streamed = py.stream_data(avg_sensor_data)
+								if streamed:
+									avg_time_reads = []
+									avg_ph_reads   = []
+									avg_temp_reads = []
+									avg_lux_reads  = []
+								plot_start_time = time_now
+							except HTTPException as e:
+								print("HTTPException: {0}".format(e))
+					time.sleep(delaytime)
 			except KeyboardInterrupt: 		# catches the ctrl-c command, which breaks the loop above
 				print("Continuous streaming stopped")
-				# py.end_stream()
+				py.end_stream()
 
 		# if not a special keyword, pass commands straight to board
 		else:
 			if len(input_val) == 0:
-				lines = read_lines()
-				for i in range(len(lines)):
-					print(lines[i])
-			elif input_val.upper() == "T":
-				print("Temperature: " + thermometer.read_temp())
+				device.query("FIND")
+			elif input_val.upper() == "WT":
+				print("Water Temperature: " + thermometer.read_temp())
+			elif input_val.upper() == "AT":
+				print("Air Temperature: " + thermometer.read_temp())
 			else:
-				device.query(input_val)
-				time.sleep(1.3)
-				lines = read_lines()
-				for i in range(len(lines)):
-					print(lines[i])
+				print(device.query(input_val))
