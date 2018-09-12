@@ -25,7 +25,6 @@ def average(list):
 
 if __name__ == '__main__':
 	device = i2c.AtlasI2C() 	# creates the I2C port object, specify the address or bus if necessary
-	ambient_sensor = dht.DHT22(board.D7)
 
 	print("    Any commands entered are passed to the pH reader via UART except:")
 	print("    Stream,xx.x command continuously polls the board every xx.x seconds and streams to plotly (https://plot.ly/~Pythagoraspberry/25)")
@@ -33,7 +32,7 @@ if __name__ == '__main__':
 	print("    Press enter to receive all data in buffer (for continuous mode) \n")
 
 	while True:
-		input_val = raw_input("Enter command: ")
+		input_val = input("Enter command: ")
 
 		if input_val.upper().startswith("LIST_ADDR"):
 			devices = device.list_i2c_devices()
@@ -50,7 +49,7 @@ if __name__ == '__main__':
 		elif input_val.upper().startswith("POLL"):
 			delaytime = float(str.split(input_val, ',')[1])
 
-			device.write("C,0") # turn off continuous mode
+			device.query("C,0") # turn off continuous mode
 			#clear all previous data
 			time.sleep(1)
 
@@ -75,11 +74,12 @@ if __name__ == '__main__':
 					# for i in range(len(lines)):
 					# 	# print("line",lines[i])
 					# 	if lines[i][0] != '*':
-					print("pH Response: " , lines[i])
+					print("pH Response: " , lines)
 					print("thermometer response: ", thermometer.read_temp())
 					print("lux response: ", luxsensor.read_lux())
-					print("ambient temp response: ", ambient_sensor.temperature())
-					print("ambient humidity response: ", ambient_sensor.humidity())
+					ambient_humidity, ambient_temperature = dht.read(22, 4)
+					print("ambient temp response: ", ambient_temperature)
+					print("ambient humidity response: ", ambient_humidity)
 					# 		ph_reads.append(lines[i])
 					# 		temp_reads.append(thermometer.read_temp())
 					# 		lux_reads.append(luxsensor.read_lux())
@@ -126,7 +126,7 @@ if __name__ == '__main__':
 			elif input_val.upper() == "T":
 				print("Temperature: " + thermometer.read_temp())
 			else:
-				device.write(input_val)
+				device.query(input_val)
 				time.sleep(1.3)
 				lines = read_lines()
 				for i in range(len(lines)):
