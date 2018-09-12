@@ -104,7 +104,7 @@ if __name__ == '__main__':
 					print("ambient temp response: ", atemp)
 					print("ambient humidity response: ", hum)
 					time_since_last_avg = (time_now - last_avg_time).seconds
-					if time_since_last_avg > 30:
+					if time_since_last_avg > 300:
 						last_avg_time = time_now
 						sensor_average(avg_sensor_data, sensor_data)
 
