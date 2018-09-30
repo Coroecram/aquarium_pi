@@ -5,7 +5,7 @@ import psycopg2
 #def insert_csv_data():
 
 if __name__ == '__main__':
-    create_table = "CREATE TABLE lima_test (id SERIAL PRIMARY KEY, observed_at TIMESTAMPTZ, ph FLOAT(2), water_temp FLOAT(2), lux FLOAT(2), air_temp FLOAT(2), humidity FLOAT(2));"
+    create_table = "ALTER TABLE lima_test (id SERIAL PRIMARY KEY, observed_at TIMESTAMPTZ, ph FLOAT(2), water_temp FLOAT(2), lux FLOAT(2), air_temp FLOAT(2), humidity FLOAT(2));"
     conn = None
     try:
         # connect to the PostgreSQL database

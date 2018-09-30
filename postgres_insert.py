@@ -6,13 +6,13 @@ import os
 
 def insert_data(time, ph, wtemp, lux, atemp, hum):
 
-    sql = """INSERT INTO lima_test(observed_at, ph, water_temp, lux, air_temp, humidity) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id;"""
+    sql = """INSERT INTO""" + os.environ["LOC_PG_TABLE"] + """(observed_at, ph, water_temp, lux, air_temp, humidity) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id;"""
 
     conn = None
     connAWS  = None
     try:
         # connect to the PostgreSQL database
-        conn = psycopg2.connect("host=localhost dbname=aquarium_data user=pi password=raspberry")
+        conn = psycopg2.connect("host=" + os.environ["LOC_PG_HOST"] + " dbname=" + os.environ["LOC_PG_DB"] + " user=" + os.environ["LOC_PG_USER"] + " password=" + os.environ["LOC_PG_PW"] + "")
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement

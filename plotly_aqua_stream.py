@@ -4,7 +4,7 @@ import plotly.plotly as plotly
 import plotly.graph_objs as go
 from plotly.exceptions import PlotlyRequestError
 
-def stream_data(datetimes, ph, temp, lux):
+def stream_aqua_data(datetimes, ph, temp):
 	trace_ph = go.Scatter(
 		name='ph_readings',
 		x=datetimes,
@@ -24,18 +24,8 @@ def stream_data(datetimes, ph, temp, lux):
 		)
 	)
 
-	trace_lux = go.Scatter(
-		name='lux_readings',
-		x=datetimes,
-	    y=lux,
-	    yaxis='y3',
-		marker = dict(
-		 	color='#2ca02c'
-		)
-	)
-
 	layout = go.Layout(
-	    title='Garzon Aquarium Readings',
+	    title='Aquarium RPi - pH and Temperature',
 	    yaxis=dict(
 	    	title='ph',
 			titlefont=dict(
@@ -61,28 +51,14 @@ def stream_data(datetimes, ph, temp, lux):
 			side='left',
 			position=0.15,
 			range=[20.25, 26.75]
-		),
-		yaxis3=dict(
-	    	title='Lux',
-			    titlefont=dict(
-			    color='#2ca02c'
-			),
-			tickfont=dict(
-			    color='#2ca02c'
-			),
-			dtick=25,
-			anchor='x',
-			overlaying='y',
-			side='right',
-			range=[0,205]
 		)
 	)
 
-	data = [trace_ph, trace_temp, trace_lux]
+	data = [trace_ph, trace_temp]
 	fig = dict(data=data, layout=layout)
 	print('Plotting')
 	try:
-		plotly.plot(fig, filename='Garzon Aquarium Readings', fileopt='extend', auto_open=False)
+		plotly.plot(fig, filename='Aquarium RPi - pH and Temperature', fileopt='extend', auto_open=False)
 		return True
 	except PlotlyRequestError as err:
 		print(err)

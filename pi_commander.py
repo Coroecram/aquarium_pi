@@ -13,7 +13,8 @@ import busio
 import thermometer_read as thermometer
 import luxsensor_read as luxsensor
 import Adafruit_DHT as dht
-import plotly_stream as py
+import plotly_aqua_stream as aqua_py
+import plotly_air_stream as air_py
 import postgres_insert as pg
 import aws_insert as aws
 
@@ -123,8 +124,9 @@ if __name__ == '__main__':
 						time_since_last_plot = ((time_now - last_plot_time).seconds / 60)
 						if time_since_last_plot > 60: # Push to Plotly every 60 minutes
 							try:
-								streamed = py.stream_data(avg_sensor_data)
-								if streamed:
+								aqua_streamed = aqua_py.stream_aqua_data(avg_sensor_data)
+								air_streamed = air_py.stream_air_data(avg_sensor_data)
+								if aqua_streamed && air_streamed:
 									avg_sensor_data = initialize_sensor_data()
 									last_plot_time = time_now
 							except HTTPException as e:
