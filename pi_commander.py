@@ -210,7 +210,9 @@ if __name__ == '__main__':
 				print("Lux: ", luxsensor.read_lux())
 			else:
 				send_cmd(input_val)
+				print("sent")
 				time.sleep(1.3)
 				lines = read_lines()
+				print(lines)
 				for i in range(len(lines)):
 					print(lines[i])
