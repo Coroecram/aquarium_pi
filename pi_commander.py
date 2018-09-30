@@ -147,7 +147,7 @@ if __name__ == '__main__':
 						# print("line",lines[i])
 						if lines[i][0] != '*':
 							# print("Response: " , lines[i])
-							ph_reads.append(lines[i])
+							ph = lines[i]
 					wtemp = thermometer.read_temp()
 					lux = luxsensor.read_lux()
 					hum, atemp = dht.read(22, 4)
@@ -195,19 +195,19 @@ if __name__ == '__main__':
 			if len(input_val) == 0:
 				send_cmd("FIND")
 			elif input_val.upper() == "WT":
-				print("Water Temperature: " + thermometer.read_temp())
+				print("Water Temperature: ", thermometer.read_temp())
 			elif input_val.upper() == "AT":
 				hum, atemp = dht.read(22, 4)
-				print("Air Temperature: " + atemp)
+				print("Air Temperature: ", atemp)
 			elif input_val.upper() == "HUM":
 				hum, atemp = dht.read(22, 4)
-				print("Humidity: " + hum)
+				print("Humidity: ", hum)
 			elif input_val.upper() == "AMB":
 				hum, atemp = dht.read(22, 4)
-				print("Air Temperature: " + atemp)
-				print("Humidity: " + hum)
+				print("Air Temperature: ", atemp)
+				print("Humidity: ", hum)
 			elif input_val.upper() == "LUX":
-				print("Lux: " + luxsensor.read_lux())
+				print("Lux: ", luxsensor.read_lux())
 			else:
 				send_cmd(input_val)
 				time.sleep(1.3)
