@@ -192,7 +192,7 @@ if __name__ == '__main__':
 		# if not a special keyword, pass commands straight to board
 		else:
 			if len(input_val) == 0:
-				device.query("FIND")
+				send_cmd("FIND")
 			elif input_val.upper() == "WT":
 				print("Water Temperature: " + thermometer.read_temp())
 			elif input_val.upper() == "AT":
@@ -208,4 +208,8 @@ if __name__ == '__main__':
 			elif input_val.upper() == "LUX":
 				print("Lux: " + luxsensor.read_lux())
 			else:
-				print(device.query(input_val))
+				send_cmd(input_val)
+				time.sleep(1.3)
+				lines = read_lines()
+				for i in range(len(lines)):
+					print(lines[i])
