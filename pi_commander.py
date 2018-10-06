@@ -13,7 +13,8 @@ import busio
 import thermometer_read as thermometer
 import luxsensor_read as luxsensor
 import Adafruit_DHT as dht
-import plotly_stream as py
+import plotly_aqua_stream as aqua_py
+import plotly_air_stream as air_py
 import postgres_insert as pg
 import aws_insert as aws
 
