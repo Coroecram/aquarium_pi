@@ -1,0 +1,1 @@
+psql --dbname=aquarium_data --username=$AWS_PG_USER --host=$AWS_PG_HOST --password=$AWS_PG_PW
