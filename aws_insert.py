@@ -12,12 +12,12 @@ def insert_data(time, ph, wtemp, lux, atemp, hum):
     print("avg hum: " + str(hum))
 
 
-    sqlAWS = """INSERT INTO lima_test(observed_at, ph, water_temp, lux, air_temp, humidity) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id;"""
+    sqlAWS = """INSERT INTO """ + os.environ["AWS_PG_TABLE"] + """(observed_at, ph, water_temp, lux, air_temp, humidity) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id;"""
 
     connAWS  = None
     try:
         # connect to the PostgreSQL database
-        connAWS = psycopg2.connect("host=" + os.environ["AWS_PG_HOST"] + " dbname=aquarium user=" + os.environ["AWS_PG_USER"] + " password=" + os.environ["AWS_PG_PW"])
+        connAWS = psycopg2.connect("host=" + os.environ["AWS_PG_HOST"] + " dbname=" + os.environ["AWS_PG_DB"] + "user=" + os.environ["AWS_PG_USER"] + " password=" + os.environ["AWS_PG_PW"])
 
         # create a new cursor
         curAWS = connAWS.cursor()
