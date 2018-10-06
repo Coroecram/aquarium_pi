@@ -123,17 +123,20 @@ if __name__ == '__main__':
 
 						time_since_last_plot = ((time_now - last_plot_time).seconds / 60)
 						if time_since_last_plot > 60: # Push to Plotly every 60 minutes
-							try:
-								streamed = py.stream_data(avg_sensor_data)
-								if streamed:
-									avg_sensor_data = initialize_sensor_data()
-									last_plot_time = time_now
-							except HTTPException as e:
-								print("HTTPException: {0}".format(e))
-					time.sleep(delaytime)
-			except KeyboardInterrupt: 		# catches the ctrl-c command, which breaks the loop above
-				print("Continuous streaming stopped")
-				py.end_stream()
+						  try:
+						    aqua_streamed = aqua_py.stream_aqua_data(avg_sensor_data)
+						    air_streamed = air_py.stream_air_data(avg_sensor_data)
+						    if aqua_streamed and air_streamed:
+						      avg_sensor_data = initialize_sensor_data()
+						      last_plot_time = time_now
+						  except HTTPException as e:
+						    print("HTTPException: {0}".format(e))
+						time.sleep(delaytime)
+						except KeyboardInterrupt: 		# catches the ctrl-c command, which breaks the loop above
+						print("Continuous streaming stopped")
+						py.end_stream()
+
+
 
 		# if not a special keyword, pass commands straight to board
 		else:
