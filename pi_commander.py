@@ -132,11 +132,11 @@ if __name__ == '__main__':
 						      last_plot_time = time_now
 						  except HTTPException as e:
 						    print("HTTPException: {0}".format(e))
-						time.sleep(delaytime)
-						
-except KeyboardInterrupt: 		# catches the ctrl-c command, which breaks the loop above
-							print("Continuous streaming stopped")
-							py.end_stream()
+					time.sleep(delaytime)
+
+					except KeyboardInterrupt: 		# catches the ctrl-c command, which breaks the loop above
+						print("Continuous streaming stopped")
+						py.end_stream()
 		# if not a special keyword, pass commands straight to board
 		else:
 			if len(input_val) == 0:
