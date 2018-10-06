@@ -139,18 +139,18 @@ if __name__ == '__main__':
 			if len(input_val) == 0:
 				device.query("FIND")
 			elif input_val.upper() == "WT":
-				print("Water Temperature: " + thermometer.read_temp())
+				print("Water Temperature: ", thermometer.read_temp())
 			elif input_val.upper() == "AT":
 				hum, atemp = dht.read(22, 4)
-				print("Air Temperature: " + atemp)
+				print("Air Temperature: ", atemp)
 			elif input_val.upper() == "HUM":
 				hum, atemp = dht.read(22, 4)
-				print("Humidity: " + hum)
+				print("Humidity: ", hum)
 			elif input_val.upper() == "AMB":
 				hum, atemp = dht.read(22, 4)
-				print("Air Temperature: " + atemp)
-				print("Humidity: " + hum)
+				print("Air Temperature: ", atemp)
+				print("Humidity: ", hum)
 			elif input_val.upper() == "LUX":
-				print("Lux: " + luxsensor.read_lux())
+				print("Lux: ", luxsensor.read_lux())
 			else:
 				print(device.query(input_val))
