@@ -98,6 +98,7 @@ if __name__ == '__main__':
 					lux = luxsensor.read_lux()
 					hum, atemp = dht.read(22, 4)
 					append_sensor_data(sensor_data, ph, wtemp, lux, atemp, hum, time_now)
+					print("Time: ", time_now)
 					print("pH Response: " , ph)
 					print("thermometer response: ", wtemp)
 					print("lux response: ", lux)
@@ -114,11 +115,11 @@ if __name__ == '__main__':
 									   avg_sensor_data['atemp'],
 									   avg_sensor_data['hum'] )
 
-						aws.insert_data(avg_sensor_data['ph'],
-						 			   avg_sensor_data['wtemp'],
-									   avg_sensor_data['lux'],
-									   avg_sensor_data['atemp'],
-									   avg_sensor_data['hum'] )
+						# aws.insert_data(avg_sensor_data['ph'],
+						#  			   avg_sensor_data['wtemp'],
+						# 			   avg_sensor_data['lux'],
+						# 			   avg_sensor_data['atemp'],
+						# 			   avg_sensor_data['hum'] )
 
 						time_since_last_plot = ((time_now - last_plot_time).seconds / 60)
 						if time_since_last_plot > 60: # Push to Plotly every 60 minutes
