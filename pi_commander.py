@@ -25,7 +25,43 @@ def average(data):
 		sum += float(read)
 	return float('%.2f' % (sum / len(data)))
 
+
+def prepend_readings(reads):
+	nones = 0
+	value = None
+	for read in reads:
+		if read != None:
+			value = read
+			break
+		nones++
+
+	for j in range(nones):
+		reads[j] = value
+
+
+def avg_diff_none_reads(input):
+	for reads in input:
+		none_count = 0
+		for i, read in reads:
+			if read == None:
+				if i == 0:
+					prepend_readings(reads)
+				elif none_count == 0:
+					pre_base_reading = reads[i-1]
+					none_count++
+			elif none_count > 0:
+				n = 1
+				difference = read - pre_base_reading
+				j = i - none_count
+				while j < i:
+					reads[j] = pre_base_reading + (n * (difference/none_count))
+					n++
+					j++
+				none_count = 0
+
+
 def sensor_average(output, input):
+	avg_diff_none_reads(input)
 	output['ph'].append(average(input['ph']))
 	output['wtemp'].append(average(input['wtemp']))
 	output['lux'].append(average(input['lux']))
@@ -134,7 +170,7 @@ if __name__ == '__main__':
 						    print("HTTPException: {0}".format(e))
 					time.sleep(delaytime)
 
-			except KeyboardInterrupt: 		
+			except KeyboardInterrupt:
 				print("Continuous streaming stopped")
 				py.end_stream()
 		# if not a special keyword, pass commands straight to board
