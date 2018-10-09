@@ -27,7 +27,7 @@ def average(data):
 
 def sensor_average(output, input):
 	output['ph'].append(average(input['ph']))
-	output['temp'].append(average(input['temp']))
+	output['wtemp'].append(average(input['wtemp']))
 	output['lux'].append(average(input['lux']))
 	output['atemp'].append(average(input['atemp']))
 	output['hum'].append(average(input['hum']))
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
 				while True:
 					time_now = datetime.datetime.now()
-					ph    = device.query("R")
+					ph    = device.query("R")[:5]
 					wtemp = thermometer.read_temp()
 					lux = luxsensor.read_lux()
 					hum, atemp = dht.read(22, 4)
