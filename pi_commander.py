@@ -33,41 +33,43 @@ def prepend_readings(reads):
 		if read != None:
 			value = read
 			break
-		nones++
+		nones = nones + 1
 
 	for j in range(nones):
 		reads[j] = value
 
 
-def avg_diff_none_reads(input):
-	for reads in input:
+def avg_diff_none_reads(reads):
+	for reads in reads:
 		none_count = 0
-		for i, read in reads:
+		idx = 0
+		for read in reads:
 			if read == None:
-				if i == 0:
+				if idx == 0:
 					prepend_readings(reads)
 				elif none_count == 0:
-					pre_base_reading = reads[i-1]
-					none_count++
+					pre_base_reading = reads[idx-1]
+					none_count = none_count + 1
 			elif none_count > 0:
 				n = 1
 				difference = read - pre_base_reading
-				j = i - none_count
+				j = idx - none_count
 				while j < i:
 					reads[j] = pre_base_reading + (n * (difference/none_count))
-					n++
-					j++
+					n = n + 1
+					j = j + 1
 				none_count = 0
+			idx = idx + 1
 
 
-def sensor_average(output, input):
-	avg_diff_none_reads(input)
-	output['ph'].append(average(input['ph']))
-	output['wtemp'].append(average(input['wtemp']))
-	output['lux'].append(average(input['lux']))
-	output['atemp'].append(average(input['atemp']))
-	output['hum'].append(average(input['hum']))
-	output['time'].append(datetime.datetime.now())
+def sensor_average(output, reads):
+	avg_diff_none_reads(reads)
+	output['ph'].append(average(reads['ph']))
+	# output['wtemp'].append(average(reads['wtemp']))
+	# output['lux'].append(average(reads['lux']))
+	# output['atemp'].append(average(reads['atemp']))
+	# output['hum'].append(average(reads['hum']))
+	# output['time'].append(datetime.datetime.now())
 	return output
 
 def initialize_sensor_data():
@@ -91,6 +93,7 @@ def append_sensor_data(sensor_data, ph, wtemp, lux, atemp, hum, time):
 if __name__ == '__main__':
 	device = i2c.AtlasI2C() 	# creates the I2C port object, specify the address or bus if necessary
 
+
 	print("    Any commands entered are passed to the pH reader via UART except:")
 	print("    Stream,xx.x command continuously polls the board every xx.x seconds and streams to plotly (https://plot.ly/~Pythagoraspberry/25)")
 	print("    Pressing ctrl-c will stop the polling\n")
@@ -106,7 +109,7 @@ if __name__ == '__main__':
 
 		# address command lets you change which address the Raspberry Pi will poll
 		elif input_val.upper().startswith("ADDRESS"):
-			addr = int(string.split(input, ',')[1])
+			addr = int(string.split(reads, ',')[1])
 			device.set_i2c_address(addr)
 			print("I2C address set to " + str(addr))
 
@@ -172,7 +175,8 @@ if __name__ == '__main__':
 
 			except KeyboardInterrupt:
 				print("Continuous streaming stopped")
-				py.end_stream()
+				aqua_py.end_stream()
+				air_py.end_stream()
 		# if not a special keyword, pass commands straight to board
 		else:
 			if len(input_val) == 0:
