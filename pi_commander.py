@@ -6,8 +6,6 @@ from vendor import i2c
 from http.client import HTTPException
 import sys
 import datetime
-from pytz import timezone
-import pytz
 import time
 import string
 import board
@@ -79,8 +77,7 @@ def sensor_average(output, reads):
 	output['lux'].append(average(reads['lux']))
 	output['atemp'].append(average(reads['atemp']))
 	output['hum'].append(average(reads['hum']))
-	eastern = timezone('US/Eastern')
-	output['time'].append(eastern.localize(datetime.datetime.now()))
+	output['time'].append(datetime.datetime.now())
 	return output
 
 def initialize_sensor_data():
@@ -160,8 +157,6 @@ if __name__ == '__main__':
 					if time_since_last_avg > 30:
 						last_avg_time = time_now
 						sensor_average(avg_sensor_data, sensor_data)
-
-						print("avg_sensor_data: ", avg_sensor_data)
 
 						pg.insert_data(avg_sensor_data, offset)
 

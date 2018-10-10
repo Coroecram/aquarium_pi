@@ -5,7 +5,7 @@ import datetime
 import os
 
 def insert_data(avg_sensor_data, offset):
-    idx = idx + offset
+    idx = offset
     sql = """INSERT INTO """ + os.environ["LOC_PG_TABLE"] + """(observed_at, ph, water_temp, lux, air_temp, humidity) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id;"""
 
     conn = None
