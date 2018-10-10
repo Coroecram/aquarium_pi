@@ -4,9 +4,9 @@ import psycopg2
 import datetime
 import os
 
-def insert_data(time, ph, wtemp, lux, atemp, hum):
-
-    sql = """INSERT INTO""" + os.environ["LOC_PG_TABLE"] + """(observed_at, ph, water_temp, lux, air_temp, humidity) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id;"""
+def insert_data(avg_sensor_data, offset):
+    idx = idx + offset
+    sql = """INSERT INTO """ + os.environ["LOC_PG_TABLE"] + """(observed_at, ph, water_temp, lux, air_temp, humidity) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id;"""
 
     conn = None
     connAWS  = None
@@ -16,7 +16,9 @@ def insert_data(time, ph, wtemp, lux, atemp, hum):
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement
-        cur.execute(sql, (time, ph, wtemp, lux, atemp, hum))
+	while(idx < len(avg_sensor_data['time'])):
+		cur.execute(sql, (avg_sensor_data['time'][idx], avg_sensor_data['ph'][idx], avg_sensor_data['wtemp'][idx], avg_sensor_data['lux'][idx], avg_sensor_data['atemp'][idx], avg_sensor_data['hum'][idx])
+		idx = idx + 1
         # commit the changes to the database
         conn.commit()
         # close communication with the database

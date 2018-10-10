@@ -6,6 +6,8 @@ from vendor import i2c
 from http.client import HTTPException
 import sys
 import datetime
+from pytz import timezone
+import pytz
 import time
 import string
 import board
@@ -44,7 +46,6 @@ def prepend_readings(reads):
 
 
 def avg_diff_none_reads(reads):
-	print("reads above: ", reads)
 	for dim in reads:
 		none_count = 0
 		idx = 0
@@ -68,7 +69,6 @@ def avg_diff_none_reads(reads):
 					from_first_none = from_first_none + 1
 				none_count = 0
 			idx = idx + 1
-	print("reads: ", reads)
 	return reads
 
 
@@ -79,7 +79,8 @@ def sensor_average(output, reads):
 	output['lux'].append(average(reads['lux']))
 	output['atemp'].append(average(reads['atemp']))
 	output['hum'].append(average(reads['hum']))
-	output['time'].append(datetime.datetime.now())
+	eastern = timezone('US/Eastern')
+	output['time'].append(eastern.localize(datetime.datetime.now()))
 	return output
 
 def initialize_sensor_data():
@@ -141,7 +142,7 @@ if __name__ == '__main__':
 
 				sensor_data = initialize_sensor_data()
 				avg_sensor_data = initialize_sensor_data()
-
+				offset = 0;
 				while True:
 					time_now = datetime.datetime.now()
 					ph    = device.query("R")[:5]
@@ -160,12 +161,9 @@ if __name__ == '__main__':
 						last_avg_time = time_now
 						sensor_average(avg_sensor_data, sensor_data)
 
-						pg.insert_data(avg_sensor_data['time'],
-									  avg_sensor_data['ph'],
-						 			   avg_sensor_data['wtemp'],
-									   avg_sensor_data['lux'],
-									   avg_sensor_data['atemp'],
-									   avg_sensor_data['hum'] )
+						print("avg_sensor_data: ", avg_sensor_data)
+
+						pg.insert_data(avg_sensor_data, offset)
 
 						# aws.insert_data(avg_sensor_data['ph'],
 						#  			   avg_sensor_data['wtemp'],
@@ -174,6 +172,7 @@ if __name__ == '__main__':
 						# 			   avg_sensor_data['hum'] )
 
 						time_since_last_plot = ((time_now - last_plot_time).seconds / 60)
+						offset = offset + 1
 						if time_since_last_plot > 60: # Push to Plotly every 60 minutes
 						  try:
 						    aqua_streamed = aqua_py.stream_aqua_data(avg_sensor_data)
@@ -181,6 +180,7 @@ if __name__ == '__main__':
 						    if aqua_streamed and air_streamed:
 						      avg_sensor_data = initialize_sensor_data()
 						      last_plot_time = time_now
+						      offset = 0
 						  except HTTPException as e:
 						    print("HTTPException: {0}".format(e))
 					time.sleep(delaytime)
