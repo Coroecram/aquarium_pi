@@ -21,7 +21,7 @@ import aws_insert as aws
 
 def average(data):
 	if len(data) == 0:
-		return None
+		return 0
 	sum = 0
 	for read in data:
 		sum += float(read)
@@ -44,6 +44,7 @@ def prepend_readings(reads):
 
 
 def avg_diff_none_reads(reads):
+	print("reads above: ", reads)
 	for dim in reads:
 		none_count = 0
 		idx = 0
@@ -155,11 +156,12 @@ if __name__ == '__main__':
 					print("ambient temp response: ", atemp)
 					print("ambient humidity response: ", hum)
 					time_since_last_avg = (time_now - last_avg_time).seconds
-					if time_since_last_avg > 300:
+					if time_since_last_avg > 30:
 						last_avg_time = time_now
 						sensor_average(avg_sensor_data, sensor_data)
 
-						pg.insert_data(avg_sensor_data['ph'],
+						pg.insert_data(avg_sensor_data['time'],
+									  avg_sensor_data['ph'],
 						 			   avg_sensor_data['wtemp'],
 									   avg_sensor_data['lux'],
 									   avg_sensor_data['atemp'],
