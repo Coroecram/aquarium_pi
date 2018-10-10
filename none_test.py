@@ -44,29 +44,22 @@ def prepend_readings(reads):
 
 
 def avg_diff_none_reads(reads):
-	print("herehere")
 	for dim in reads:
 		none_count = 0
 		idx = 0
 		readings = reads[dim]
 		for reading in readings:
-			print("reading" + str(idx) + ": " + str(reading))
 			if reading == None:
 				if idx == 0:
-					print("here! 51")
 					prepend_readings(readings)
 					none_count = -1 # To compensate for + 1 at end of loop
 				elif none_count == 0:
 					pre_base_reading = readings[idx-1]
-					print("pre_base_reading: ", pre_base_reading)
 				none_count = none_count + 1
 			elif none_count > 0:
 				n = 1
 				difference = reading - pre_base_reading
-				from_first_none = idx - none_count
-				print("from_first_none : ", from_first_none)
-				print("none_count : ", none_count)
-				print("difference: ", difference)			
+				from_first_none = idx - none_count	
 				while from_first_none < idx:
 					readings[from_first_none] = pre_base_reading + ((n/(none_count+1)) * difference)
 
@@ -86,7 +79,7 @@ def sensor_average(output, reads):
 	output['atemp'].append(average(reads['atemp']))
 	output['hum'].append(average(reads['hum']))
 	output['time'].append(datetime.datetime.now())
-	print(output)
+	return output
 
 def initialize_sensor_data():
 	return {
