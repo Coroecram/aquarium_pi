@@ -16,9 +16,14 @@ def insert_data(avg_sensor_data, offset):
         # create a new cursor
         cur = conn.cursor()
         # execute the INSERT statement
-	while(idx < len(avg_sensor_data['time'])):
-		cur.execute(sql, (avg_sensor_data['time'][idx], avg_sensor_data['ph'][idx], avg_sensor_data['wtemp'][idx], avg_sensor_data['lux'][idx], avg_sensor_data['atemp'][idx], avg_sensor_data['hum'][idx])
-		idx = idx + 1
+        while(idx < len(avg_sensor_data['time'])):
+            cur.execute(sql, (avg_sensor_data['time'][idx],
+                              avg_sensor_data['ph'][idx],
+                              avg_sensor_data['wtemp'][idx],
+                              avg_sensor_data['lux'][idx],
+                              avg_sensor_data['atemp'][idx],
+                              avg_sensor_data['hum'][idx])
+            idx = idx + 1
         # commit the changes to the database
         conn.commit()
         # close communication with the database
