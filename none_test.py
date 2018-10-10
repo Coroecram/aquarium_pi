@@ -20,6 +20,8 @@ import aws_insert as aws
 
 
 def average(data):
+	if len(data) == 0:
+		return None
 	sum = 0
 	for read in data:
 		sum += float(read)
@@ -62,10 +64,12 @@ def avg_diff_none_reads(reads):
 				n = 1
 				difference = reading - pre_base_reading
 				from_first_none = idx - none_count
-				
+				print("from_first_none : ", from_first_none)
+				print("none_count : ", none_count)
+				print("difference: ", difference)			
 				while from_first_none < idx:
-					readings[from_first_none] = pre_base_reading + (n * (difference/none_count))
-					print("readings: ", readings)
+					readings[from_first_none] = pre_base_reading + ((n/(none_count+1)) * difference)
+
 					n = n + 1
 					from_first_none = from_first_none + 1
 				none_count = 0
@@ -105,6 +109,6 @@ def append_sensor_data(sensor_data, ph, wtemp, lux, atemp, hum, time):
 if __name__ == '__main__':
 	reads = initialize_sensor_data()
 	output = initialize_sensor_data()
-	reads['ph'] = [None, None, None, 1, None, None, None, None, -4000]
+	reads['ph'] = [None, 49, None, 49, None, None, None, None, 400000]
 	
 	sensor_average(output, reads)
