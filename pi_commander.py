@@ -28,50 +28,25 @@ def average(data):
 	return float('%.2f' % (sum / len(data)))
 
 
-def prepend_readings(reads):
-	nones = 0
-	value = None
-	for read in reads:
-		if read != None:
-			value = read
-			break
-		nones = nones + 1
 
-	for j in range(nones):
-		reads[j] = value
-
-	return reads
-
-
-def avg_diff_none_reads(reads):
+def replace_none_reads(reads):
 	for dim in reads:
 		none_count = 0
 		idx = 0
 		readings = reads[dim]
+		valid_readings = []
 		for reading in readings:
-			if reading == None:
-				if idx == 0:
-					prepend_readings(readings)
-					none_count = -1 # To compensate for + 1 at end of loop
-				elif none_count == 0:
-					pre_base_reading = readings[idx-1]
-				none_count = none_count + 1
-			elif none_count > 0:
-				n = 1
-				difference = reading - pre_base_reading
-				from_first_none = idx - none_count	
-				while from_first_none < idx:
-					readings[from_first_none] = pre_base_reading + ((n/(none_count+1)) * difference)
+			if reading != None:
+				valid_readings.append(reading)
 
-					n = n + 1
-					from_first_none = from_first_none + 1
-				none_count = 0
-			idx = idx + 1
+		if (len(valid_readings) > 0):
+			reads[dim] = valid_readings
+
 	return reads
 
 
 def sensor_average(output, reads):	
-	avg_diff_none_reads(reads)
+	replace_none_reads(reads)
 	output['ph'].append(average(reads['ph']))
 	output['wtemp'].append(average(reads['wtemp']))
 	output['lux'].append(average(reads['lux']))
