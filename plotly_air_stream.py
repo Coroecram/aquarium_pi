@@ -4,33 +4,33 @@ import plotly.plotly as plotly
 import plotly.graph_objs as go
 from plotly.exceptions import PlotlyRequestError
 
-def stream_air_data(datetimes, lux, air_temp, hum):
+def stream_air_data(avg_sensor_data):
 	trace_lux = go.Scatter(
 		name='lux_readings',
-		x=datetimes,
-	    y=lux,
+		x=avg_sensor_data['time'],
+	    	y=avg_sensor_data['lux'],
 		marker = dict(
-		 	color='#1f77b4'
+		 color='#1f77b4'
 		)
 	)
 
 	trace_temp = go.Scatter(
 		name='air_temp_readings',
-		x=datetimes,
-	    y=air_temp,
-	    yaxis='y2',
+		x=avg_sensor_data['time'],
+	   	 y=avg_sensor_data['air_temp'],
+	    	yaxis='y2',
 		marker = dict(
-		 	color='#ff7f0e'
+		 color='#ff7f0e'
 		)
 	)
 
 	trace_hum = go.Scatter(
 		name='hum_readings',
-		x=datetimes,
-	    y=hum,
-	    yaxis='y2',
+		x=avg_sensor_data['time'],
+	    	y=avg_sensor_data['hum'],
+	   	 yaxis='y2',
 		marker = dict(
-		 	color='#ff7f0e'
+		 color='#ff7f0e'
 		)
 	)
 

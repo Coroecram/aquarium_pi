@@ -4,11 +4,11 @@ import plotly.plotly as plotly
 import plotly.graph_objs as go
 from plotly.exceptions import PlotlyRequestError
 
-def stream_aqua_data(datetimes, ph, temp):
+def stream_aqua_data(avg_sensor_data):
 	trace_ph = go.Scatter(
 		name='ph_readings',
-		x=datetimes,
-	    y=ph,
+		x=avg_sensor_data['times'],
+	    y=avg_sensor_data['ph'],
 		marker = dict(
 		 	color='#1f77b4'
 		)
@@ -16,8 +16,8 @@ def stream_aqua_data(datetimes, ph, temp):
 
 	trace_temp = go.Scatter(
 		name='temp_readings',
-		x=datetimes,
-	    y=temp,
+		x=avg_sensor_data['times'],
+	    y=avg_sensor_data['temp'],
 	    yaxis='y2',
 		marker = dict(
 		 	color='#ff7f0e'
@@ -27,7 +27,7 @@ def stream_aqua_data(datetimes, ph, temp):
 	layout = go.Layout(
 	    title='Aquarium RPi - pH and Temperature',
 	    yaxis=dict(
-	    	title='ph',
+	    	title='pH',
 			titlefont=dict(
             	color='#1f77b4'
 	        ),
