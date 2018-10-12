@@ -43,7 +43,7 @@ def replace_none_reads(reads):
 		if (len(valid_readings) > 0):
 			noneless_reads[dim] = valid_readings
 
-	return reads
+	return noneless_reads
 
 
 def sensor_average(output, reads):	
@@ -161,22 +161,41 @@ if __name__ == '__main__':
 				aqua_py.end_stream()
 				air_py.end_stream()
 		# if not a special keyword, pass commands straight to board
+		# device.query sends to pH meter; default sends to pH meter 'R'
 		else:
 			if len(input_val) == 0:
 				device.query("FIND")
 			elif input_val.upper() == "WT":
 				print("Water Temperature: ", thermometer.read_temp())
-			elif input_val.upper() == "AT":
+			elif input_val.upper() == 'AT':
 				hum, atemp = dht.read(22, 4)
 				print("Air Temperature: ", atemp)
-			elif input_val.upper() == "HUM":
+			elif input_val.upper() == 'HUM':
 				hum, atemp = dht.read(22, 4)
 				print("Humidity: ", hum)
-			elif input_val.upper() == "AMB":
+			elif input_val.upper() == 'AMB':
 				hum, atemp = dht.read(22, 4)
 				print("Air Temperature: ", atemp)
 				print("Humidity: ", hum)
-			elif input_val.upper() == "LUX":
+			elif input_val.upper() == 'LUX':
 				print("Lux: ", luxsensor.read_lux())
-			else:
-				print(device.query(input_val))
+			elif input_val.upper() == 'ALL':
+				print("Aquarium pH: ", device.query("R"))
+				print("Water Temperature: ", thermometer.read_temp())
+				print("Lux: ", luxsensor.read_lux())
+				hum, atemp = dht.read(22, 4)
+				print("Air Temperature: ", atemp)
+				print("Humidity: ", hum)
+			elif input_val.upper() == 'ENV':
+				print("Aquarium pH: ", device.query("R"))
+				print("Water Temperature: ", thermometer.read_temp())
+				print("Lux: ", luxsensor.read_lux())
+				hum, atemp = dht.read(22, 4)
+				print("Air Temperature: ", atemp)
+				print("Humidity: ", hum)
+			else
+				print("ph Meter: ", device.query())
+
+def default():
+	print("default")
+	print(device.query(input_val))
