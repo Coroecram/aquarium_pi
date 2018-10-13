@@ -29,7 +29,7 @@ def average(data):
 
 
 
-def replace_none_reads(reads):
+def replace_none_reads(output, reads):
 	noneless_reads = {}
 	for dim in reads:
 		none_count = 0
@@ -40,14 +40,13 @@ def replace_none_reads(reads):
 			if reading != None:
 				valid_readings.append(reading)
 
-		if (len(valid_readings) > 0):
-			noneless_reads[dim] = valid_readings
+		noneless_reads[dim] = valid_readings
 
 	return noneless_reads
 
 
-def sensor_average(output, reads):	
-	noneless_reads = replace_none_reads(reads)
+def sensor_average(output, reads):
+	noneless_reads = replace_none_reads(output, reads)
 	output['ph'].append(average(noneless_reads['ph']))
 	output['wtemp'].append(average(noneless_reads['wtemp']))
 	output['lux'].append(average(noneless_reads['lux']))
